@@ -59,9 +59,9 @@ int main() {
     std::cout << "Approximate Query Engine Demo\n";
     std::cout << "----------------------------\n";
     
-    auto data = loadDataFromCSV("data/friends_data.csv");
+    auto data = loadDataFromCSV("data/large_data.csv");
     if (data.empty()) return 1;
-    std::cout << "Loaded " << data.size() << " rows from data/friends_data.csv\n";
+    std::cout << "Loaded " << data.size() << " rows from data/large_data.csv\n";
     
     QueryParser parser;
     
