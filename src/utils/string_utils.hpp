@@ -28,9 +28,16 @@ static std::vector<std::string> splitCSV(const std::string& line) {
     std::vector<std::string> result;
     std::stringstream ss(line);
     std::string item;
+    
     while (std::getline(ss, item, ',')) {
         result.push_back(trim(item));
     }
+
+    // UPDATED: Add this check to handle trailing commas correctly
+    if (!line.empty() && line.back() == ',') {
+        result.push_back("");
+    }
+    
     return result;
 }
 
