@@ -90,14 +90,14 @@ int main() {
     QueryParser parser;
     
     std::vector<std::pair<std::string, std::string>> queries = {
-        // {"Total Row Count (Exact)", "SELECT COUNT(*) FROM data"},
-        // {"Approximate Total Row Count (10% Sample)","SELECT COUNT(*) FROM data SAMPLE 10%"},
-        // {"Total Sum of 'value' (Exact)", "SELECT SUM(value) FROM data"},
-        // {"Approximate Total Sum of 'value' (10% Sample)", "SELECT SUM(value) FROM data SAMPLE 10%"},
-        // {"Overall Average of 'value' (Exact)", "SELECT AVG(value) FROM data"},
-        // {"Approximate Overall Average of 'value' (10% Sample)", "SELECT AVG(value) FROM data SAMPLE 10%"},
-        // {"Min and Max of 'value' (Exact)", "SELECT MIN(value), MAX(value) FROM data"},
-        // {"Approximate Min and Max of 'value' (10% Sample)", "SELECT MIN(value), MAX(value) FROM data SAMPLE 10%"},
+        {"Total Row Count (Exact)", "SELECT COUNT(*) FROM data"},
+        {"Approximate Total Row Count (10% Sample)","SELECT COUNT(*) FROM data SAMPLE 10%"},
+        {"Total Sum of 'value' (Exact)", "SELECT SUM(value) FROM data"},
+        {"Approximate Total Sum of 'value' (10% Sample)", "SELECT SUM(value) FROM data SAMPLE 10%"},
+        {"Overall Average of 'value' (Exact)", "SELECT AVG(value) FROM data"},
+        {"Approximate Overall Average of 'value' (10% Sample)", "SELECT AVG(value) FROM data SAMPLE 10%"},
+        {"Min and Max of 'value' (Exact)", "SELECT MIN(value), MAX(value) FROM data"},
+        {"Approximate Min and Max of 'value' (10% Sample)", "SELECT MIN(value), MAX(value) FROM data SAMPLE 10%"},
 
 
         {"GROUP BY with COUNT, SUM and AVG", "SELECT category, COUNT(*), SUM(value), AVG(value) FROM data GROUP BY category"},
