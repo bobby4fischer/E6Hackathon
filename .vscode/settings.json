@@ -80,6 +80,8 @@
         "set": "cpp",
         "condition_variable": "cpp",
         "any": "cpp",
-        "string_view": "cpp"
+        "string_view": "cpp",
+        "variant": "cpp",
+        "xtree": "cpp"
     }
 }

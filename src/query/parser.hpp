@@ -7,8 +7,7 @@
 #include <stdexcept>
 #include <regex>
 #include <sstream>
-#include "../utils/string_utils.hpp"  
-using namespace aqe::utils;
+#include "../utils/string_utils.hpp"   
 
 namespace aqe {
 namespace query {
@@ -73,13 +72,9 @@ enum class SamplingMethod { NONE, RANDOM, SYSTEMATIC, RESERVOIR, STRATIFIED };
                     has_non_agg_column = true;
                 }
             }
-
-            // A GROUP BY is only required if you select both an aggregated column
-            // AND a non-aggregated column in the same query.
             if (has_non_agg_column && has_aggregation && group_by_columns.empty()) {
                 throw ParseError("Queries with both aggregated and non-aggregated columns require a GROUP BY clause.");
             } 
-
             sampling.validate();
         }
     };
@@ -169,23 +164,40 @@ enum class SamplingMethod { NONE, RANDOM, SYSTEMATIC, RESERVOIR, STRATIFIED };
                     }
                 }
             }
-            
-            // NEW: Function to parse the sample clause
-            void parseSampling(Query* query, const std::string& sample_str) {
-                static const std::regex sample_regex(R"(\s*(\d+(?:\.\d+)?)\s*%)", std::regex::icase);
-                std::smatch matches;
-                if (std::regex_search(sample_str, matches, sample_regex)) {
-                    query->sampling.method = SamplingMethod::RANDOM;
-                    query->sampling.rate = std::stod(matches[1].str()) / 100.0;
-                } 
-            }
-
             size_t findKeyword(const std::string& query, const std::string& keyword) {
                 size_t pos = query.find(keyword);
                 if (pos == std::string::npos) {
                     throw ParseError("Missing " + keyword + " clause");
                 }
                 return pos;
+            }
+
+            // UPDATED: This function is now feature-complete
+            void parseSampling(Query* query, const std::string& sample_str) {
+                static const std::regex sample_regex(
+                    R"(\s*(?:(RESERVOIR)\s+(\d+)|(SYSTEMATIC)\s+(\d+)|(STRATIFIED)\s+BY\s+([\w]+)\s+(\d+(?:\.\d+)?)%|(\d+(?:\.\d+)?)%))", 
+                    std::regex::icase
+                );
+                
+                std::smatch matches;
+                if (std::regex_search(sample_str, matches, sample_regex)) {
+                    if (matches[1].matched) { // RESERVOIR
+                        query->sampling.method = SamplingMethod::RESERVOIR;
+                        query->sampling.size = std::stoull(matches[2].str());
+                    } else if (matches[3].matched) { // SYSTEMATIC
+                        query->sampling.method = SamplingMethod::SYSTEMATIC;
+                        query->sampling.size = std::stoull(matches[4].str());
+                    } else if (matches[5].matched) { // STRATIFIED
+                        query->sampling.method = SamplingMethod::STRATIFIED;
+                        query->sampling.stratification_column = matches[6].str();
+                        query->sampling.rate = std::stod(matches[7].str()) / 100.0;
+                    } else if (matches[8].matched) { // RANDOM (percentage)
+                        query->sampling.method = SamplingMethod::RANDOM;
+                        query->sampling.rate = std::stod(matches[8].str()) / 100.0;
+                    }
+                } else {
+                    throw ParseError("Invalid SAMPLE clause format");
+                }
             }
         };
 
